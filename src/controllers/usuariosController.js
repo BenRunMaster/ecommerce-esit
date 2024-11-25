@@ -7,10 +7,10 @@ const loginUsuario = async (req, res) => {
     const { correo, contrasena } = req.body;
     try {
         const [rows] = await pool.query(
-            'SELECT * FROM usuarios WHERE correo = ? AND contrasena = ?',
-            [correo, contrasena]
+            "SELECT * FROM usuarios WHERE correo = ? AND ? = CAST(AES_DECRYPT(contrasena,SHA2(?, 512)) AS CHAR)",
+            [correo, contrasena, process.env.PWD_KEY]
         );
-
+       
         if (rows.length === 0) {
             return res.status(401).json({ message: 'Credenciales incorrectas' });
         }
