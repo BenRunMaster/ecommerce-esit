@@ -22,3 +22,7 @@ Este proyecto es una API RESTful construida con **Node.js**, **Express**, y **My
 
 ## Modo de Desarrollo
 4. Ejecutar comando "npm run dev"
+
+
+## Coleccion de Endpoints
+Consulta la coleccion de endpoints de la API en el documento de la tarea o el archivo de coleccion de POSTMAN.
