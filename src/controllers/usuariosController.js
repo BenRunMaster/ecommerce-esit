@@ -51,8 +51,8 @@ const createUsuario = async (req, res) => {
     const { nombre, correo, contrasena } = req.body;
     try {
         const result = await pool.query(
-            'INSERT INTO usuarios (nombre, correo, contrasena) VALUES (?, ?, ?)',
-            [nombre, correo, contrasena]
+            "INSERT INTO usuarios (nombre, correo, contrasena) VALUES (?, ?, AES_ENCRYPT(?, SHA2(?,512)))",
+            [nombre, correo, contrasena, process.env.PWD_KEY]
         );
         res.json({ id: result[0].insertId, nombre, correo });
     } catch (error) {
@@ -64,8 +64,8 @@ const updateUsuario = async (req, res) => {
     const { nombre, correo, contrasena } = req.body;
     try {
         await pool.query(
-            'UPDATE usuarios SET nombre = ?, correo = ?, contrasena = ? WHERE usuario_id = ?',
-            [nombre, correo, contrasena, req.params.id]
+            'UPDATE usuarios SET nombre = ?, correo = ?, contrasena = AES_ENCRYPT(?, SHA2(?,512)) WHERE usuario_id = ?',
+            [nombre, correo, contrasena, process.env.PWD_KEY, req.params.id]
         );
         res.json({ message: 'Usuario actualizado' });
     } catch (error) {
