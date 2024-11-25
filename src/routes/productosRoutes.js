@@ -1,19 +1,18 @@
 const express = require('express');
 const {
-    getAllPedidos,
-    getPedidoById,
-    createPedido,
-    updatePedido,
-    deletePedido,
-} = require('../controllers/pedidosController');
+    getAllProductos,
+    getProductoById,
+    createProducto,
+    updateProducto,
+    deleteProducto,
+} = require('../controllers/productosController'); 
 const authenticateToken = require('../middleware/auth');
 const router = express.Router();
 
-// Endpoints protegidos
-router.get('/', authenticateToken, getAllPedidos);
-router.get('/:id', authenticateToken, getPedidoById);
-router.post('/', authenticateToken, createPedido);
-router.put('/:id', authenticateToken, updatePedido);
-router.delete('/:id', authenticateToken, deletePedido);
+router.get('/', authenticateToken, getAllProductos); 
+router.get('/:id', authenticateToken, getProductoById); 
+router.post('/', authenticateToken, createProducto); 
+router.put('/:id', authenticateToken, updateProducto); 
+router.delete('/:id', authenticateToken, deleteProducto); 
 
 module.exports = router;

@@ -10,11 +10,9 @@ const {
 const authenticateToken = require('../middleware/auth');
 const router = express.Router();
 
-// Endpoints sin autenticación
-router.post('/register', createUsuario); // Registrar usuario
-router.post('/login', loginUsuario);     // Login de usuario
+router.post('/register', createUsuario); 
+router.post('/login', loginUsuario);     
 
-// Endpoints protegidos
 router.get('/', authenticateToken, getAllUsuarios);
 router.get('/:id', authenticateToken, getUsuarioById);
 router.put('/:id', authenticateToken, updateUsuario);
