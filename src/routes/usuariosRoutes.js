@@ -8,11 +8,14 @@ const {
     loginUsuario,
 } = require('../controllers/usuariosController');
 const authenticateToken = require('../middleware/auth');
+const measurePerformance = require('../middleware/measurePerformance');
+
 const router = express.Router();
+
+router.use(measurePerformance);
 
 router.post('/register', createUsuario); 
 router.post('/login', loginUsuario);     
-
 router.get('/', authenticateToken, getAllUsuarios);
 router.get('/:id', authenticateToken, getUsuarioById);
 router.put('/:id', authenticateToken, updateUsuario);

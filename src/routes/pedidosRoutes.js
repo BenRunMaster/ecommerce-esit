@@ -7,7 +7,11 @@ const {
     deletePedido,
 } = require('../controllers/pedidosController');
 const authenticateToken = require('../middleware/auth'); 
+const measurePerformance = require('../middleware/measurePerformance');
+
 const router = express.Router();
+
+router.use(measurePerformance);
 
 router.get('/', authenticateToken, getAllPedidos); 
 router.get('/:id', authenticateToken, getPedidoById); 

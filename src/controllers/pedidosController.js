@@ -1,14 +1,14 @@
-const logger = require('../utils/logger');
+const {generalLogger} = require('../utils/logger');
 const Pedido = require('../models/pedidosModel'); 
 
 
 const getAllPedidos = async (req, res) => {
     try {
         const pedidos = await Pedido.getAllPedidos();
-        logger.info('Se obtuvieron todos los pedidos');
+        generalLogger.info('Se obtuvieron todos los pedidos');
         res.json(pedidos);
     } catch (error) {
-        logger.error(`Error al obtener los pedidos: ${error.message}`);
+        generalLogger.error(`Error al obtener los pedidos: ${error.message}`);
         res.status(500).json({ error: error.message });
     }
 };
@@ -17,13 +17,13 @@ const getPedidoById = async (req, res) => {
     try {
         const pedido = await Pedido.getPedidoById(req.params.id);
         if (!pedido) {
-            logger.warn(`Pedido con ID ${req.params.id} no encontrado`);
+            generalLogger.warn(`Pedido con ID ${req.params.id} no encontrado`);
             return res.status(404).json({ error: 'Pedido no encontrado' });
         }
-        logger.info(`Pedido con ID ${req.params.id} encontrado`);
+        generalLogger.info(`Pedido con ID ${req.params.id} encontrado`);
         res.json(pedido);
     } catch (error) {
-        logger.error(`Error al obtener el pedido con ID ${req.params.id}: ${error.message}`);
+        generalLogger.error(`Error al obtener el pedido con ID ${req.params.id}: ${error.message}`);
         res.status(500).json({ error: error.message });
     }
 };
@@ -37,10 +37,10 @@ const createPedido = async (req, res) => {
 
     try {
         const nuevoPedido = await Pedido.createPedido(usuario_id, estado, total, productos);
-        logger.info(`Pedido creado con ID ${nuevoPedido.id}`);
+        generalLogger.info(`Pedido creado con ID ${nuevoPedido.id}`);
         res.json(nuevoPedido);
     } catch (error) {
-        logger.error(`Error al crear el pedido: ${error.message}`);
+        generalLogger.error(`Error al crear el pedido: ${error.message}`);
         res.status(500).json({ error: error.message });
     }
 };
@@ -55,13 +55,13 @@ const updatePedido = async (req, res) => {
     try {
         const pedidoActualizado = await Pedido.updatePedido(req.params.id, usuario_id, estado, total, productos);
         if (!pedidoActualizado) {
-            logger.warn(`Pedido con ID ${req.params.id} no encontrado para actualizar`);
+            generalLogger.warn(`Pedido con ID ${req.params.id} no encontrado para actualizar`);
             return res.status(404).json({ error: 'Pedido no encontrado' });
         }
-        logger.info(`Pedido con ID ${req.params.id} actualizado`);
+        generalLogger.info(`Pedido con ID ${req.params.id} actualizado`);
         res.json({ message: 'Pedido actualizado' });
     } catch (error) {
-        logger.error(`Error al actualizar el pedido con ID ${req.params.id}: ${error.message}`);
+        generalLogger.error(`Error al actualizar el pedido con ID ${req.params.id}: ${error.message}`);
         res.status(500).json({ error: error.message });
     }
 };
@@ -70,13 +70,13 @@ const deletePedido = async (req, res) => {
     try {
         const pedidoEliminado = await Pedido.deletePedido(req.params.id);
         if (!pedidoEliminado) {
-            logger.warn(`Pedido con ID ${req.params.id} no encontrado para eliminar`);
+            generalLogger.warn(`Pedido con ID ${req.params.id} no encontrado para eliminar`);
             return res.status(404).json({ error: 'Pedido no encontrado' });
         }
-        logger.info(`Pedido con ID ${req.params.id} eliminado`);
+        generalLogger.info(`Pedido con ID ${req.params.id} eliminado`);
         res.json({ message: 'Pedido eliminado' });
     } catch (error) {
-        logger.error(`Error al eliminar el pedido con ID ${req.params.id}: ${error.message}`);
+        generalLogger.error(`Error al eliminar el pedido con ID ${req.params.id}: ${error.message}`);
         res.status(500).json({ error: error.message });
     }
 };

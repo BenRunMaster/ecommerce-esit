@@ -1,10 +1,11 @@
 const winston = require('winston');
 const path = require('path');
 
-const logger = winston.createLogger({
+// Logger para logs generales (app.log, error.log)
+const generalLogger = winston.createLogger({
   level: 'info', // Nivel de logs predeterminado ('info', 'warn', 'error')
   format: winston.format.combine(
-    winston.format.timestamp(), 
+    winston.format.timestamp(),
     winston.format.printf(({ timestamp, level, message }) => {
       return `${timestamp} ${level}: ${message}`; 
     })
@@ -22,12 +23,32 @@ const logger = winston.createLogger({
 });
 
 if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
+  generalLogger.add(new winston.transports.Console({
     format: winston.format.combine(
-      winston.format.colorize(), 
-      winston.format.simple() 
+      winston.format.colorize(),
+      winston.format.simple()
     )
   }));
 }
 
-module.exports = logger;
+// Logger para logs de tiempo de respuesta (response-time.log)
+const responseTimeLogger = winston.createLogger({
+  level: 'info', 
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} ${level}: ${message}`;
+    })
+  ),
+  transports: [
+    new winston.transports.File({
+      filename: path.join(__dirname, 'logs', 'response-time.log'),
+      level: 'info' 
+    })
+  ]
+});
+
+module.exports = {
+  generalLogger,
+  responseTimeLogger
+};

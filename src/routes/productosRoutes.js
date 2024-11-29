@@ -7,7 +7,11 @@ const {
     deleteProducto,
 } = require('../controllers/productosController'); 
 const authenticateToken = require('../middleware/auth');
+const measurePerformance = require('../middleware/measurePerformance');
+
 const router = express.Router();
+
+router.use(measurePerformance);
 
 router.get('/', authenticateToken, getAllProductos); 
 router.get('/:id', authenticateToken, getProductoById); 
