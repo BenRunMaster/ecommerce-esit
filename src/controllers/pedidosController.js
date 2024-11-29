@@ -1,37 +1,29 @@
-const pool = require('../config/db');
+const logger = require('../utils/logger');
+const Pedido = require('../models/pedidosModel'); 
+
 
 const getAllPedidos = async (req, res) => {
     try {
-        const [pedidos] = await pool.query('SELECT * FROM pedidos');
-
-        const [detalles] = await pool.query('SELECT * FROM detalles_pedido');
-
-        const pedidosConDetalles = pedidos.map(pedido => ({
-            ...pedido,
-            detalles: detalles.filter(detalle => detalle.pedido_id === pedido.pedido_id),
-        }));
-
-        res.json(pedidosConDetalles);
+        const pedidos = await Pedido.getAllPedidos();
+        logger.info('Se obtuvieron todos los pedidos');
+        res.json(pedidos);
     } catch (error) {
+        logger.error(`Error al obtener los pedidos: ${error.message}`);
         res.status(500).json({ error: error.message });
     }
 };
 
 const getPedidoById = async (req, res) => {
     try {
-        const [pedido] = await pool.query('SELECT * FROM pedidos WHERE pedido_id = ?', [req.params.id]);
-
-        if (!pedido.length) {
+        const pedido = await Pedido.getPedidoById(req.params.id);
+        if (!pedido) {
+            logger.warn(`Pedido con ID ${req.params.id} no encontrado`);
             return res.status(404).json({ error: 'Pedido no encontrado' });
         }
-
-        const [detalles] = await pool.query('SELECT * FROM detalles_pedido WHERE pedido_id = ?', [req.params.id]);
-
-        res.json({
-            ...pedido[0],
-            detalles,
-        });
+        logger.info(`Pedido con ID ${req.params.id} encontrado`);
+        res.json(pedido);
     } catch (error) {
+        logger.error(`Error al obtener el pedido con ID ${req.params.id}: ${error.message}`);
         res.status(500).json({ error: error.message });
     }
 };
@@ -43,32 +35,13 @@ const createPedido = async (req, res) => {
         return res.status(400).json({ error: 'Se requiere una lista de productos para el pedido' });
     }
 
-    const connection = await pool.getConnection();
     try {
-        await connection.beginTransaction();
-
-        const [result] = await connection.query(
-            'INSERT INTO pedidos (usuario_id, estado, total) VALUES (?, ?, ?)',
-            [usuario_id, estado, total]
-        );
-
-        const pedido_id = result.insertId;
-
-        for (const producto of productos) {
-            const { producto_id, cantidad, precio_unitario } = producto;
-            await connection.query(
-                'INSERT INTO detalles_pedido (pedido_id, producto_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)',
-                [pedido_id, producto_id, cantidad, precio_unitario]
-            );
-        }
-
-        await connection.commit();
-        res.json({ id: pedido_id, usuario_id, estado, total });
+        const nuevoPedido = await Pedido.createPedido(usuario_id, estado, total, productos);
+        logger.info(`Pedido creado con ID ${nuevoPedido.id}`);
+        res.json(nuevoPedido);
     } catch (error) {
-        await connection.rollback();
+        logger.error(`Error al crear el pedido: ${error.message}`);
         res.status(500).json({ error: error.message });
-    } finally {
-        connection.release();
     }
 };
 
@@ -79,51 +52,32 @@ const updatePedido = async (req, res) => {
         return res.status(400).json({ error: 'Se requiere una lista de productos para actualizar el pedido' });
     }
 
-    const connection = await pool.getConnection();
     try {
-        await connection.beginTransaction();
-
-        await connection.query(
-            'UPDATE pedidos SET usuario_id = ?, estado = ?, total = ? WHERE pedido_id = ?',
-            [usuario_id, estado, total, req.params.id]
-        );
-
-        await connection.query('DELETE FROM detalles_pedido WHERE pedido_id = ?', [req.params.id]);
-
-        for (const producto of productos) {
-            const { producto_id, cantidad, precio_unitario } = producto;
-            await connection.query(
-                'INSERT INTO detalles_pedido (pedido_id, producto_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)',
-                [req.params.id, producto_id, cantidad, precio_unitario]
-            );
+        const pedidoActualizado = await Pedido.updatePedido(req.params.id, usuario_id, estado, total, productos);
+        if (!pedidoActualizado) {
+            logger.warn(`Pedido con ID ${req.params.id} no encontrado para actualizar`);
+            return res.status(404).json({ error: 'Pedido no encontrado' });
         }
-
-        await connection.commit();
+        logger.info(`Pedido con ID ${req.params.id} actualizado`);
         res.json({ message: 'Pedido actualizado' });
     } catch (error) {
-        await connection.rollback();
+        logger.error(`Error al actualizar el pedido con ID ${req.params.id}: ${error.message}`);
         res.status(500).json({ error: error.message });
-    } finally {
-        connection.release();
     }
 };
 
 const deletePedido = async (req, res) => {
-    const connection = await pool.getConnection();
     try {
-        await connection.beginTransaction();
-
-        await connection.query('DELETE FROM detalles_pedido WHERE pedido_id = ?', [req.params.id]);
-
-        await connection.query('DELETE FROM pedidos WHERE pedido_id = ?', [req.params.id]);
-
-        await connection.commit();
+        const pedidoEliminado = await Pedido.deletePedido(req.params.id);
+        if (!pedidoEliminado) {
+            logger.warn(`Pedido con ID ${req.params.id} no encontrado para eliminar`);
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+        }
+        logger.info(`Pedido con ID ${req.params.id} eliminado`);
         res.json({ message: 'Pedido eliminado' });
     } catch (error) {
-        await connection.rollback();
+        logger.error(`Error al eliminar el pedido con ID ${req.params.id}: ${error.message}`);
         res.status(500).json({ error: error.message });
-    } finally {
-        connection.release();
     }
 };
 

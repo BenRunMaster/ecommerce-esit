@@ -1,0 +1,8 @@
+2024-11-29T00:57:32.168Z info: Se obtuvieron todas las categorías
+2024-11-29T01:02:13.605Z error: Error al intentar iniciar sesión para hector7chess@email.com: pool is not defined
+2024-11-29T01:03:18.119Z info: Se obtuvieron todos los usuarios
+2024-11-29T01:03:24.086Z error: Error al intentar iniciar sesión para hector7chess@email.com: pool is not defined
+2024-11-29T01:05:13.295Z error: Error al intentar iniciar sesión para hector7chess@email.com: jwt is not defined
+2024-11-29T01:06:24.643Z info: Inicio de sesión exitoso para el usuario: hector7chess@email.com
+2024-11-29T01:09:51.389Z info: Se obtuvieron todos los productos
+2024-11-29T01:12:42.074Z info: Se obtuvieron todos los pedidos
