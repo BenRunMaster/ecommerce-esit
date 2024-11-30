@@ -12,3 +12,9 @@
 2024-11-29T01:39:20.967Z info: Method: GET, Route: /api/pedidos, Status: 200, Duration: 48ms
 2024-11-29T01:48:13.369Z info: Se obtuvieron todos los pedidos
 2024-11-29T01:48:37.249Z info: Se obtuvieron todos los pedidos
+2024-11-30T21:54:31.986Z error: Error al intentar iniciar sesión para hector7chess@email.com: 987F0000:error:0A000102:SSL routines:ssl_choose_client_version:unsupported protocol:c:\ws\deps\openssl\openssl\ssl\statem\statem_lib.c:1988:
+
+2024-11-30T23:31:27.025Z warn: Intento de inicio de sesión fallido para el correo: hector7chess@email.com
+2024-11-30T23:31:35.784Z info: Usuario creado con ID 6
+2024-11-30T23:31:40.108Z info: Inicio de sesión exitoso para el usuario: hector7chess@email.com
+2024-11-30T23:34:29.699Z info: Se obtuvieron todos los pedidos
