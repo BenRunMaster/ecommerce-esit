@@ -1,0 +1,61 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 50
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+  payload:
+    path: "./userstest.csv" # Ruta al archivo CSV
+    fields: ["nombre", "correo", "contrasena"] # Los encabezados del CSV
+
+scenarios:
+  - name: "Prueba de registro de usuario"
+    flow:
+      - post:
+          url: "/api/usuarios/register"
+          json:
+            nombre: "{{ nombre }}"
+            correo: "{{ correo }}"
+            contrasena: "{{ contrasena }}"
+      - capture:
+          json: "$.id"
+          as: userId
+
+  - name: "Prueba de inicio de sesión"
+    flow:
+      - post:
+          url: "/api/usuarios/login"
+          json:
+            correo: "{{ correo }}"
+            contrasena: "{{ contrasena }}"
+      - capture:
+          json: "$.token"
+          as: authToken
+
+  - name: "Prueba de obtención de usuario por ID"
+    flow:
+      - get:
+          url: "/api/usuarios/{{ userId }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+
+  - name: "Prueba de actualización de usuario"
+    flow:
+      - put:
+          url: "/api/usuarios/{{ userId }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            nombre: "{{ nombre }}"
+            correo: "actualizado{{ correo }}"
+            contrasena: "nuevaPassword123"
+
+  - name: "Prueba de eliminación de usuario"
+    flow:
+      - delete:
+          url: "/api/usuarios/{{ userId }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
