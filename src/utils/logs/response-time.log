@@ -1,7 +1,0 @@
-2024-12-01T02:44:28.917Z info: Method: POST, Route: /api/usuarios/register, Status: 200, Duration: 109ms
-2024-12-01T03:09:18.534Z info: Method: GET, Route: /api/pedidos/1, Status: 403, Duration: 7ms
-2024-12-01T03:11:28.891Z info: Method: POST, Route: /api/pedidos, Status: 403, Duration: 6ms
-2024-12-01T03:11:33.373Z info: Method: POST, Route: /api/usuarios/login, Status: 401, Duration: 6ms
-2024-12-01T03:11:59.882Z info: Method: POST, Route: /api/usuarios/login, Status: 200, Duration: 6ms
-2024-12-01T03:12:16.007Z info: Method: POST, Route: /api/pedidos, Status: 400, Duration: 2ms
-2024-12-01T03:13:07.943Z info: Method: GET, Route: /api/pedidos/1, Status: 404, Duration: 4ms

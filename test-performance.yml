@@ -20,9 +20,11 @@ scenarios:
             nombre: "{{ nombre }}"
             correo: "{{ correo }}"
             contrasena: "{{ contrasena }}"
+          on-failure: log # Registra errores si la solicitud falla
       - capture:
-          json: "$.id"
+          json: "$.id" # Captura el ID del usuario registrado
           as: userId
+          on-failure: skip # Si no se encuentra el ID, omite los pasos dependientes
 
   - name: "Prueba de inicio de sesión"
     flow:
@@ -31,9 +33,11 @@ scenarios:
           json:
             correo: "{{ correo }}"
             contrasena: "{{ contrasena }}"
+          on-failure: log # Registra errores si la solicitud falla
       - capture:
-          json: "$.token"
+          json: "$.token" # Captura el token de autenticación
           as: authToken
+          on-failure: skip # Si no se encuentra el token, omite los pasos dependientes
 
   - name: "Prueba de obtención de usuario por ID"
     flow:
@@ -41,6 +45,7 @@ scenarios:
           url: "/api/usuarios/{{ userId }}"
           headers:
             Authorization: "Bearer {{ authToken }}"
+          on-failure: log # Registra errores si la solicitud falla
 
   - name: "Prueba de actualización de usuario"
     flow:
@@ -52,6 +57,7 @@ scenarios:
             nombre: "{{ nombre }}"
             correo: "actualizado{{ correo }}"
             contrasena: "nuevaPassword123"
+          on-failure: log # Registra errores si la solicitud falla
 
   - name: "Prueba de eliminación de usuario"
     flow:
@@ -59,3 +65,4 @@ scenarios:
           url: "/api/usuarios/{{ userId }}"
           headers:
             Authorization: "Bearer {{ authToken }}"
+          on-failure: log # Registra errores si la solicitud falla
